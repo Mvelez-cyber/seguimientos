@@ -16,10 +16,13 @@ except gspread.exceptions.SpreadsheetNotFound as e:
     st.error(f'No se puede encontrar la hoja de cálculo llamada "TasksSheet". Asegúrate de que el nombre sea correcto y que el acceso esté configurado correctamente. Error: {e}')
     st.stop()  # Detiene la ejecución del script si ocurre un error
 
-# Función para cargar datos desde Google Sheets
+# Cargar datos desde Google Sheets
 def load_data():
-    data = sheet.get_all_records()
-    return pd.DataFrame(data)
+    # Usa get_all_values para obtener los valores crudos
+    data = sheet.get_all_values()
+    # Convertir los valores en DataFrame usando la primera fila como encabezados
+    df = pd.DataFrame(data[1:], columns=data[0])
+    return df
 
 # Función para guardar datos en Google Sheets
 def save_data(df):
