@@ -31,6 +31,17 @@ st.title('Gestión de Tareas - Proyecto')
 # Cargar datos
 df = load_data()
 
+# Diagnóstico
+st.write("Columnas disponibles en el DataFrame:")
+st.write(df.columns)
+st.write("Primeras filas del DataFrame:")
+st.write(df.head())
+
+# Verifica si la columna 'Fecha' está presente
+if 'Fecha' not in df.columns:
+    st.error("La columna 'Fecha' no está presente en el DataFrame. Verifica el nombre de la columna en Google Sheets.")
+    st.stop()
+
 # Seleccionar una fecha
 fecha = st.date_input('Selecciona una fecha', datetime.today())
 
