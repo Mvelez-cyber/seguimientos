@@ -8,7 +8,13 @@ from datetime import datetime
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
 client = gspread.authorize(creds)
-sheet = client.open('TasksSheet').sheet1  # Abre la hoja de cálculo
+
+try:
+    # Intentar abrir la hoja de cálculo
+    sheet = client.open('TasksSheet').sheet1
+except gspread.exceptions.SpreadsheetNotFound as e:
+    st.error(f'No se puede encontrar la hoja de cálculo llamada "TasksSheet". Asegúrate de que el nombre sea correcto y que el acceso esté configurado correctamente. Error: {e}')
+    st.stop()  # Detiene la ejecución del script si ocurre un error
 
 # Función para cargar datos desde Google Sheets
 def load_data():
