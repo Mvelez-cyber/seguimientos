@@ -1,8 +1,21 @@
+import json
+import os
 import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 from datetime import datetime
+
+def get_credentials():
+    if 'STREAMLIT_SHARING_MODE' in os.environ:
+        # Estamos en Streamlit Cloud
+        return json.loads(st.secrets["credentials_json"])
+    else:
+        # Estamos en desarrollo local
+        with open("credentials.json") as f:
+            return json.load(f)
+
+credentials = get_credentials()
 
 # Configuración de autenticación de Google Sheets
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
