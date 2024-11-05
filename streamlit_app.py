@@ -1,16 +1,18 @@
-from xmlrpc import client
 import streamlit as st
 from utils import initialize_gsheet_client
 import pandas as pd
 from datetime import datetime
 import gspread
 
+# Inicializar el cliente
+client = initialize_gsheet_client()
+
 try:
     # Intentar abrir la hoja de cálculo
     sheet = client.open('TasksSheet').sheet1
 except gspread.exceptions.SpreadsheetNotFound as e:
     st.error(f'No se puede encontrar la hoja de cálculo llamada "TasksSheet". Asegúrate de que el nombre sea correcto y que el acceso esté configurado correctamente. Error: {e}')
-    st.stop()  # Detiene la ejecución del script si ocurre un error
+    st.stop()
 
 # Cargar datos desde Google Sheets
 def load_data():
