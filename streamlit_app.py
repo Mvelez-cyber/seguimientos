@@ -1,18 +1,20 @@
 import streamlit as st
-from utils import initialize_gsheet_client
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 from datetime import datetime
-import gspread
 
-# Inicializar el cliente
-client = initialize_gsheet_client()
+# Configuración de autenticación de Google Sheets
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+client = gspread.authorize(creds)
 
 try:
     # Intentar abrir la hoja de cálculo
     sheet = client.open('TasksSheet').sheet1
 except gspread.exceptions.SpreadsheetNotFound as e:
     st.error(f'No se puede encontrar la hoja de cálculo llamada "TasksSheet". Asegúrate de que el nombre sea correcto y que el acceso esté configurado correctamente. Error: {e}')
-    st.stop()
+    st.stop()  # Detiene la ejecución del script si ocurre un error
 
 # Cargar datos desde Google Sheets
 def load_data():
