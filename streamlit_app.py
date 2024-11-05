@@ -35,32 +35,36 @@ st.title('Gestión de Tareas - Proyecto')
 df = load_data()
 
 # Diagnóstico
-st.write("Columnas disponibles en el DataFrame:")
-st.write(df.columns)
-st.write("Primeras filas del DataFrame:")
-st.write(df.head())
+st.write("Todas las tareas:")
+st.dataframe(df.head(), width=1000)  # Ajustamos el ancho a 1000 píxeles
 
 # Verifica si la columna 'Fecha' está presente
 if 'Fecha' not in df.columns:
     st.error("La columna 'Fecha' no está presente en el DataFrame. Verifica el nombre de la columna en Google Sheets.")
     st.stop()
 
-# Seleccionar una fecha
-fecha = st.date_input('Selecciona una fecha', datetime.today())
+# Seleccionar rango de fechas para visualización
+col1, col2 = st.columns(2)
+with col1:
+    fecha_inicio = st.date_input('Fecha inicial', datetime.today())
+with col2:
+    fecha_fin = st.date_input('Fecha final', datetime.today())
 
-# Mostrar las tareas del día seleccionado
-st.write(f'Tareas para {fecha}')
-tareas_dia = df[df['Fecha'] == str(fecha)]
-st.table(tareas_dia)
+# Mostrar las tareas del rango seleccionado
+st.write(f'Tareas desde {fecha_inicio} hasta {fecha_fin}')
+mask = (df['Fecha'] >= str(fecha_inicio)) & (df['Fecha'] <= str(fecha_fin))
+tareas_periodo = df[mask]
+st.table(tareas_periodo)
 
 # Formulario para añadir una tarea
 with st.form(key='task_form'):
+    fecha_tarea = st.date_input('Fecha de la tarea', datetime.today())
     tarea = st.text_input('Descripción de la tarea')
     estado = st.selectbox('Estado', ['Pendiente', 'En Progreso', 'Completa'])
     submit_button = st.form_submit_button(label='Añadir tarea')
 
     if submit_button and tarea:
-        new_task = pd.DataFrame({'Fecha': [str(fecha)], 'Tarea': [tarea], 'Estado': [estado]})
+        new_task = pd.DataFrame({'Fecha': [str(fecha_tarea)], 'Tarea': [tarea], 'Estado': [estado]})
         df = pd.concat([df, new_task], ignore_index=True)
         save_data(df)
         st.success('Tarea añadida correctamente')
