@@ -1,15 +1,9 @@
-import json
-import os
+from xmlrpc import client
 import streamlit as st
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from utils import initialize_gsheet_client
 import pandas as pd
 from datetime import datetime
-
-# Configuración de autenticación de Google Sheets
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name('.streamlit/credentials.json', scope)
-client = gspread.authorize(creds)
+import gspread
 
 try:
     # Intentar abrir la hoja de cálculo
