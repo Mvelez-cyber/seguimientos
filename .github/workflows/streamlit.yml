@@ -24,4 +24,9 @@ jobs:
         env:
           GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
         run: |
+          # Verificar que las credenciales estén presentes
+          if [ -z "$GCP_SERVICE_ACCOUNT" ]; then
+            echo "Error: GCP_SERVICE_ACCOUNT no está configurado"
+            exit 1
+          fi
           streamlit run streamlit_app.py 

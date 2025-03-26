@@ -8,9 +8,32 @@ import os
 
 # Configuración de autenticación de Google Sheets usando variables de entorno
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-service_account_info = json.loads(os.environ.get('GCP_SERVICE_ACCOUNT', '{}'))
-creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
-client = gspread.authorize(creds)
+try:
+    # Asegurarnos de que el JSON tenga el formato correcto
+    raw_credentials = os.environ.get('GCP_SERVICE_ACCOUNT', '{}')
+    if not raw_credentials.startswith('{'):
+        raw_credentials = '{' + raw_credentials + '}'
+    
+    service_account_info = json.loads(raw_credentials)
+    if not service_account_info:
+        st.error("No se encontraron las credenciales de Google Cloud. Por favor, verifica la configuración.")
+        st.stop()
+    
+    # Verificar que las credenciales tengan el formato correcto
+    required_fields = ['type', 'project_id', 'private_key_id', 'private_key', 'client_email', 'client_id']
+    missing_fields = [field for field in required_fields if field not in service_account_info]
+    if missing_fields:
+        st.error(f"Faltan campos requeridos en las credenciales: {', '.join(missing_fields)}")
+        st.stop()
+        
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
+    client = gspread.authorize(creds)
+except json.JSONDecodeError:
+    st.error("Error al decodificar las credenciales JSON. Verifica el formato.")
+    st.stop()
+except Exception as e:
+    st.error(f"Error al configurar las credenciales: {str(e)}")
+    st.stop()
 
 try:
     # Intentar abrir la hoja de cálculo
