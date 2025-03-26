@@ -29,4 +29,7 @@ jobs:
             echo "Error: GCP_SERVICE_ACCOUNT no está configurado"
             exit 1
           fi
+          # Mostrar diagnóstico
+          echo "Longitud de las credenciales: ${#GCP_SERVICE_ACCOUNT}"
+          echo "Primeros 100 caracteres: ${GCP_SERVICE_ACCOUNT:0:100}"
           streamlit run streamlit_app.py 

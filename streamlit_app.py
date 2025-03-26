@@ -6,11 +6,20 @@ from datetime import datetime
 import json
 import os
 
+# Diagnóstico de variables de entorno
+st.write("Diagnóstico de variables de entorno:")
+st.write("GCP_SERVICE_ACCOUNT presente:", bool(os.environ.get('GCP_SERVICE_ACCOUNT')))
+if os.environ.get('GCP_SERVICE_ACCOUNT'):
+    st.write("Longitud de las credenciales:", len(os.environ.get('GCP_SERVICE_ACCOUNT')))
+    st.write("Primeros 100 caracteres:", os.environ.get('GCP_SERVICE_ACCOUNT')[:100])
+
 # Configuración de autenticación de Google Sheets usando variables de entorno
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 try:
     # Obtener las credenciales y limpiar el formato
     raw_credentials = os.environ.get('GCP_SERVICE_ACCOUNT', '{}')
+    st.write("Credenciales raw:", raw_credentials[:100])  # Mostrar inicio de las credenciales
+    
     # Eliminar espacios en blanco y saltos de línea innecesarios
     raw_credentials = raw_credentials.strip()
     # Asegurarnos de que sea un JSON válido
