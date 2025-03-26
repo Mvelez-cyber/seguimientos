@@ -18,7 +18,7 @@ if "gcp_service_account" in st.secrets:
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 try:
     # Obtener las credenciales de Streamlit Secrets
-    service_account_info = st.secrets["gcp_service_account"]
+    service_account_info = dict(st.secrets["gcp_service_account"])
     
     if not service_account_info:
         st.error("No se encontraron las credenciales de Google Cloud. Por favor, verifica la configuración en Streamlit Secrets.")
