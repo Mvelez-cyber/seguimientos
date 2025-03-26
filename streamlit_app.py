@@ -6,9 +6,13 @@ from datetime import datetime
 import json
 import os
 
-# Diagnóstico de credenciales
-st.write("Diagnóstico de credenciales:")
-st.write("Credenciales presentes:", bool(st.secrets.get("gcp_service_account")))
+# Diagnóstico detallado de secretos
+st.write("Diagnóstico detallado de secretos:")
+st.write("Todos los secretos disponibles:", list(st.secrets.keys()))
+st.write("gcp_service_account presente:", bool(st.secrets.get("gcp_service_account")))
+if "gcp_service_account" in st.secrets:
+    st.write("Tipo de gcp_service_account:", type(st.secrets["gcp_service_account"]))
+    st.write("Campos en gcp_service_account:", list(st.secrets["gcp_service_account"].keys()))
 
 # Configuración de autenticación de Google Sheets usando Streamlit Secrets
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
