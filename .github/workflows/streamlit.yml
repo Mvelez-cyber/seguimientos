@@ -1,0 +1,27 @@
+name: Deploy Streamlit App
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install streamlit gspread oauth2client pandas
+          
+      - name: Deploy to Streamlit Cloud
+        env:
+          GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+        run: |
+          streamlit run streamlit_app.py 
